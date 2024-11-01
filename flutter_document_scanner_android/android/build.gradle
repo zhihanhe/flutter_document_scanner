@@ -29,7 +29,8 @@ android {
         namespace("com.christian.flutterDocumentScanner")
     }
 
-    compileSdkVersion 33
+    // compileSdkVersion 33
+    compileSdk = flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

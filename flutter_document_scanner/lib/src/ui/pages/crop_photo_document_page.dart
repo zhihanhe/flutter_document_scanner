@@ -37,8 +37,12 @@ class CropPhotoDocumentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return WillPopScope(
-      onWillPop: () => _onPop(context),
+    return PopScope(
+      canPop: false, // When false, blocks the current route from being popped.
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        _onPop(context);
+      },
+      // onWillPop: () => _onPop(context),
       child: BlocSelector<AppBloc, AppState, File?>(
         selector: (state) => state.pictureInitial,
         builder: (context, state) {
@@ -86,6 +90,26 @@ class CropPhotoDocumentPage extends StatelessWidget {
   }
 }
 
+// class _CropView extends StatefulWidget {
+//   const _CropView({
+//     required this.cropPhotoDocumentStyle,
+//     required this.image,
+//   });
+//   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
+//   final File image;
+
+//   __CropView createState() => __CropView();
+// }
+
+// class __CropView extends State<_CropView> {
+
+//   Widget build(BuildContext context) {
+//     return
+//   }
+
+// }
+
+
 class _CropView extends StatelessWidget {
   const _CropView({
     required this.cropPhotoDocumentStyle,
@@ -93,6 +117,14 @@ class _CropView extends StatelessWidget {
   });
   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
   final File image;
+
+  // 调整边用的个数
+  static const int borderHeightCount = 2;
+
+  // 隐藏圆角
+  // double leftTopPointOpacity = 1.0;
+
+  // 隐藏显示containr
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +184,7 @@ class _CropView extends StatelessWidget {
                   },
                 ),
 
-                // * Border Mask
+                // * 线框
                 BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) => state.area,
                   builder: (context, state) {
@@ -207,6 +239,12 @@ class _CropView extends StatelessWidget {
                                 ),
                               );
                         },
+                        onPanStart: (details) {
+                          
+                        },
+                        onPanEnd: (details) {
+                          
+                        },
                         child: Container(
                           color: Colors.transparent,
                           width: cropPhotoDocumentStyle.dotSize,
@@ -216,11 +254,14 @@ class _CropView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 cropPhotoDocumentStyle.dotRadius,
                               ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                              child: Opacity(
+                                opacity: leftTopPointOpacity,
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -349,6 +390,206 @@ class _CropView extends StatelessWidget {
                     );
                   },
                 ),
+
+                // 左边的线中段
+                BlocSelector<CropBloc, CropState, Point>(
+                  selector: (state) {
+                    return Point((state.area.topLeft.x + state.area.bottomLeft.x)/ 2.0, (state.area.topLeft.y + state.area.bottomLeft.y) / 2.0);
+                  },
+                  builder: (context, state) {
+                    return Positioned(
+                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
+                      top: state.y - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.topLeft,
+                                ),
+                              );
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.bottomLeft,
+                                ),
+                              );
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          width: cropPhotoDocumentStyle.dotSize,
+                          height: cropPhotoDocumentStyle.dotSize * borderHeightCount,
+                          child: Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                cropPhotoDocumentStyle.dotRadius,
+                              ),
+                              child: Container(
+                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height:
+                                    cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // 上边的线中段
+                BlocSelector<CropBloc, CropState, Point>(
+                  selector: (state) {
+                    return Point((state.area.topLeft.x + state.area.topRight.x)/ 2.0, (state.area.topLeft.y + state.area.topRight.y) / 2.0);
+                  },
+                  builder: (context, state) {
+                    return Positioned(
+                      left: state.x - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.topLeft,
+                                ),
+                              );
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.topRight,
+                                ),
+                              );
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          width: cropPhotoDocumentStyle.dotSize * borderHeightCount,
+                          height: cropPhotoDocumentStyle.dotSize,
+                          child: Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                cropPhotoDocumentStyle.dotRadius,
+                              ),
+                              child: Container(
+                                width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                height:
+                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // 右边的线中段
+                BlocSelector<CropBloc, CropState, Point>(
+                  selector: (state) {
+                    return Point((state.area.topRight.x + state.area.bottomRight.x)/ 2.0, 
+                                (state.area.topRight.y + state.area.bottomRight.y) / 2.0,);
+                  },
+                  builder: (context, state) {
+                    return Positioned(
+                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
+                      top: state.y - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.topRight,
+                                ),
+                              );
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.bottomRight,
+                                ),
+                              );
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          width: cropPhotoDocumentStyle.dotSize,
+                          height: cropPhotoDocumentStyle.dotSize * borderHeightCount,
+                          child: Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                cropPhotoDocumentStyle.dotRadius,
+                              ),
+                              child: Container(
+                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                height:
+                                    cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                // 下边的线中段
+                BlocSelector<CropBloc, CropState, Point>(
+                  selector: (state) {
+                    return Point((state.area.bottomLeft.x + state.area.bottomRight.x)/ 2.0, 
+                                  (state.area.bottomLeft.y + state.area.bottomRight.y) / 2.0,);
+                  },
+                  builder: (context, state) {
+                    return Positioned(
+                      left: state.x - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.bottomLeft,
+                                ),
+                              );
+                          context.read<CropBloc>().add(
+                                CropDotMoved(
+                                  deltaX: details.delta.dx,
+                                  deltaY: details.delta.dy,
+                                  dotPosition: DotPosition.bottomRight,
+                                ),
+                              );
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          width: cropPhotoDocumentStyle.dotSize * borderHeightCount,
+                          height: cropPhotoDocumentStyle.dotSize,
+                          child: Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                cropPhotoDocumentStyle.dotRadius,
+                              ),
+                              child: Container(
+                                width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                height:
+                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+
               ],
             ),
           ),

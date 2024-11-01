@@ -26,10 +26,10 @@ class _CustomPageState extends State<CustomPage> {
         controller: _controller,
         generalStyles: const GeneralStyles(
           hideDefaultBottomNavigation: true,
-          messageTakingPicture: 'Taking picture of document',
-          messageCroppingPicture: 'Cropping picture of document',
-          messageEditingPicture: 'Editing picture of document',
-          messageSavingPicture: 'Saving picture of document',
+          messageTakingPicture: '处理中请稍后',
+          messageCroppingPicture: '裁剪中请稍后',
+          messageEditingPicture: '处理中请稍后',
+          messageSavingPicture: '保存图片中请稍后',
           baseColor: Colors.teal,
         ),
         takePhotoDocumentStyle: TakePhotoDocumentStyle(
@@ -52,7 +52,7 @@ class _CustomPageState extends State<CustomPage> {
                 ),
                 child: const Center(
                   child: Text(
-                    'Take a picture of the document',
+                    '拍摄文稿内容',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -74,7 +74,7 @@ class _CustomPageState extends State<CustomPage> {
                     backgroundColor: Colors.teal,
                   ),
                   child: const Text(
-                    'Take picture',
+                    '拍摄',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -88,9 +88,14 @@ class _CustomPageState extends State<CustomPage> {
         cropPhotoDocumentStyle: CropPhotoDocumentStyle(
           top: MediaQuery.of(context).padding.top,
           maskColor: Colors.teal.withOpacity(0.2),
+          textButtonSave: '确定',
         ),
         editPhotoDocumentStyle: EditPhotoDocumentStyle(
           top: MediaQuery.of(context).padding.top,
+          textButtonSave: '保存',
+          textButtonEco: '扫描',
+          textButtonGray: '黑白',
+          textButtonNatural: '原色',
         ),
         resolutionCamera: ResolutionPreset.ultraHigh,
         pageTransitionBuilder: (child, animation) {

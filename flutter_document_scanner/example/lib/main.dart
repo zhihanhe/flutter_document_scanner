@@ -33,17 +33,17 @@ class MyApp extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // * Basic example page
-                  ElevatedButton(
-                    onPressed: () => Navigator.push<void>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => const BasicPage(),
-                      ),
-                    ),
-                    child: const Text(
-                      'Basic example',
-                    ),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () => Navigator.push<void>(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (BuildContext context) => const BasicPage(),
+                  //     ),
+                  //   ),
+                  //   child: const Text(
+                  //     'Basic example',
+                  //   ),
+                  // ),
 
                   // * Custom example page
                   ElevatedButton(
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'Custom example',
+                      '拍摄文档',
                     ),
                   ),
 
@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'From gallery example',
+                      '从相册选择',
                     ),
                   ),
                 ],

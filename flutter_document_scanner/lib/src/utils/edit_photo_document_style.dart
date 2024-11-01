@@ -15,6 +15,9 @@ class EditPhotoDocumentStyle {
     this.hideAppBarDefault = false,
     this.hideBottomBarDefault = false,
     this.textButtonSave = 'SAVE',
+    this.textButtonNatural = 'Natural',
+    this.textButtonGray = 'GRAY',
+    this.textButtonEco = 'ECO',
     this.children,
     this.top = 0,
     this.bottom = 0,
@@ -30,6 +33,15 @@ class EditPhotoDocumentStyle {
 
   /// Text of save button
   final String textButtonSave;
+
+  /// 自然滤镜按钮文字
+  final String textButtonNatural;
+
+  /// 黑白滤镜按钮文字
+  final String textButtonGray;
+
+  /// 扫描按钮文字
+  final String textButtonEco;
 
   /// Widget to be displayed on the page
   final List<Widget>? children;

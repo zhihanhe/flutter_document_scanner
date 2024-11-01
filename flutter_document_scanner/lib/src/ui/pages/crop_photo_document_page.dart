@@ -90,27 +90,7 @@ class CropPhotoDocumentPage extends StatelessWidget {
   }
 }
 
-// class _CropView extends StatefulWidget {
-//   const _CropView({
-//     required this.cropPhotoDocumentStyle,
-//     required this.image,
-//   });
-//   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
-//   final File image;
-
-//   __CropView createState() => __CropView();
-// }
-
-// class __CropView extends State<_CropView> {
-
-//   Widget build(BuildContext context) {
-//     return
-//   }
-
-// }
-
-
-class _CropView extends StatelessWidget {
+class _CropView extends StatefulWidget {
   const _CropView({
     required this.cropPhotoDocumentStyle,
     required this.image,
@@ -118,16 +98,43 @@ class _CropView extends StatelessWidget {
   final CropPhotoDocumentStyle cropPhotoDocumentStyle;
   final File image;
 
-  // 调整边用的个数
-  static const int borderHeightCount = 2;
+  @override
+  __CropView createState() => __CropView();
+}
+
+class __CropView extends State<_CropView> {
+
+  late CropPhotoDocumentStyle cropPhotoDocumentStyle;
+  late File image;
+  Point maginifierRefPoint = const Point(0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+    cropPhotoDocumentStyle = widget.cropPhotoDocumentStyle;
+    image = widget.image;
+  }
 
   // 隐藏圆角
-  // double leftTopPointOpacity = 1.0;
-
-  // 隐藏显示containr
+  int leftTopPointOpacity = 1;
+  int leftBottomPointOpacity = 1;
+  int rightTopPointOpacity = 1;
+  int rightBottomPointOpacity = 1;
+  int magnifierOpacity = 0;
+  
 
   @override
   Widget build(BuildContext context) {
+
+    // 调整边用的个数
+    const int borderHeightCount = 2;
+
+    // 放大镜的大小
+    const int magnifierSize = 100;
+
+    // 放大镜的顶端距离
+    const int maginifierDxTop = 20;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AppBloc, AppState>(
@@ -232,18 +239,27 @@ class _CropView extends StatelessWidget {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.topLeft,
-                                ),
-                              );
+                            CropDotMoved(
+                              deltaX: details.delta.dx,
+                              deltaY: details.delta.dy,
+                              dotPosition: DotPosition.topLeft,
+                            ),
+                          );
+                          maginifierRefPoint = Point(state.x, state.y);
                         },
                         onPanStart: (details) {
-                          
+                          maginifierRefPoint = Point(state.x, state.y);
+                          setState(() {
+                            leftTopPointOpacity = 0;
+                            magnifierOpacity = 1;
+                          });
                         },
                         onPanEnd: (details) {
-                          
+                          maginifierRefPoint = const Point(0,0);
+                          setState(() {
+                            leftTopPointOpacity = 1;
+                            magnifierOpacity = 0;
+                          });
                         },
                         child: Container(
                           color: Colors.transparent,
@@ -255,7 +271,7 @@ class _CropView extends StatelessWidget {
                                 cropPhotoDocumentStyle.dotRadius,
                               ),
                               child: Opacity(
-                                opacity: leftTopPointOpacity,
+                                opacity: leftTopPointOpacity.toDouble(),
                                 child: Container(
                                   width: cropPhotoDocumentStyle.dotSize - (2 * 2),
                                   height:
@@ -281,12 +297,27 @@ class _CropView extends StatelessWidget {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.topRight,
-                                ),
-                              );
+                            CropDotMoved(
+                              deltaX: details.delta.dx,
+                              deltaY: details.delta.dy,
+                              dotPosition: DotPosition.topRight,
+                            ),
+                          );
+                          maginifierRefPoint = Point(state.x, state.y);
+                        },
+                        onPanStart: (details) {
+                          maginifierRefPoint = Point(state.x, state.y);
+                          setState(() {
+                            rightTopPointOpacity = 0;
+                            magnifierOpacity = 1;
+                          });
+                        },
+                        onPanEnd: (details) {
+                          maginifierRefPoint = const Point(0,0);
+                          setState(() {
+                            rightTopPointOpacity = 1;
+                            magnifierOpacity = 0;
+                          });
                         },
                         child: Container(
                           color: Colors.transparent,
@@ -297,11 +328,14 @@ class _CropView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 cropPhotoDocumentStyle.dotRadius,
                               ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                              child: Opacity(
+                                opacity: rightTopPointOpacity.toDouble(),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -321,12 +355,27 @@ class _CropView extends StatelessWidget {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.bottomLeft,
-                                ),
-                              );
+                            CropDotMoved(
+                              deltaX: details.delta.dx,
+                              deltaY: details.delta.dy,
+                              dotPosition: DotPosition.bottomLeft,
+                            ),
+                          );
+                          maginifierRefPoint = Point(state.x, state.y);
+                        },
+                        onPanStart: (details) {
+                          maginifierRefPoint = Point(state.x, state.y);
+                          setState(() {
+                            leftBottomPointOpacity = 0;
+                            magnifierOpacity = 1;
+                          });
+                        },
+                        onPanEnd: (details) {
+                          maginifierRefPoint = const Point(0,0);
+                          setState(() {
+                            leftBottomPointOpacity = 1;
+                            magnifierOpacity = 0;
+                          });
                         },
                         child: Container(
                           color: Colors.transparent,
@@ -337,11 +386,14 @@ class _CropView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 cropPhotoDocumentStyle.dotRadius,
                               ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                              child: Opacity(
+                                opacity: leftBottomPointOpacity.toDouble(),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -361,12 +413,27 @@ class _CropView extends StatelessWidget {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
-                                CropDotMoved(
-                                  deltaX: details.delta.dx,
-                                  deltaY: details.delta.dy,
-                                  dotPosition: DotPosition.bottomRight,
-                                ),
-                              );
+                            CropDotMoved(
+                              deltaX: details.delta.dx,
+                              deltaY: details.delta.dy,
+                              dotPosition: DotPosition.bottomRight,
+                            ),
+                          );
+                          maginifierRefPoint = Point(state.x, state.y);
+                        },
+                        onPanStart: (details) {
+                          maginifierRefPoint = Point(state.x, state.y);
+                          setState(() {
+                            rightBottomPointOpacity = 0;
+                            magnifierOpacity = 1;
+                          });
+                        },
+                        onPanEnd: (details) {
+                          maginifierRefPoint = const Point(0,0);
+                          setState(() {
+                            rightBottomPointOpacity = 1;
+                            magnifierOpacity = 0;
+                          });
                         },
                         child: Container(
                           color: Colors.transparent,
@@ -377,11 +444,14 @@ class _CropView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 cropPhotoDocumentStyle.dotRadius,
                               ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                              child: Opacity(
+                                opacity: rightBottomPointOpacity.toDouble(),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -589,6 +659,30 @@ class _CropView extends StatelessWidget {
                   },
                 ),
 
+                // 放大镜-左上
+                BlocSelector<CropBloc, CropState, Area>(
+                  selector: (state) => state.area,
+                  builder: (context, state) {
+                    return Positioned(
+                      left: maginifierRefPoint.x - (magnifierSize / 2),
+                      top: (maginifierRefPoint.y - magnifierSize - maginifierDxTop).toDouble(),
+                      child: Opacity(
+                        opacity: magnifierOpacity.toDouble(),
+                        child: RawMagnifier(
+                          size: Size(magnifierSize.toDouble(), magnifierSize.toDouble()),
+                          focalPointOffset: const Offset(0, magnifierSize / 2 + maginifierDxTop),
+                          decoration: const MagnifierDecoration(
+                            shape: CircleBorder(
+                              side: BorderSide(color: Colors.green, width: 2),
+                            ),
+                          ),
+                          magnificationScale: 2,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
 
               ],
             ),
@@ -606,4 +700,5 @@ class _CropView extends StatelessWidget {
       ),
     );
   }
+
 }

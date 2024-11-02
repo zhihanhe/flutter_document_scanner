@@ -491,16 +491,19 @@ class __CropView extends State<_CropView> {
                           color: Colors.transparent,
                           width: cropPhotoDocumentStyle.dotSize,
                           height: cropPhotoDocumentStyle.dotSize * borderHeightCount,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
-                                color: Colors.white,
+                          child: Transform.rotate(
+                            angle: pi/3,
+                            child: Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  cropPhotoDocumentStyle.dotRadius,
+                                ),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),

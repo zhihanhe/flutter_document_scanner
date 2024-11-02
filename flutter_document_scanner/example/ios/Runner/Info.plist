@@ -48,6 +48,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>To scan documents</string>
+	<string>To scan documents</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>选择文件</string>
 </dict>
 </plist>

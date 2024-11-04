@@ -19,6 +19,7 @@ import 'package:flutter_document_scanner/src/bloc/crop/crop_state.dart';
 import 'package:flutter_document_scanner/src/ui/widgets/app_bar_crop_photo.dart';
 import 'package:flutter_document_scanner/src/ui/widgets/mask_crop.dart';
 import 'package:flutter_document_scanner/src/utils/border_crop_area_painter.dart';
+import 'package:flutter_document_scanner/src/utils/border_crop_mid_painter.dart';
 import 'package:flutter_document_scanner/src/utils/dot_utils.dart';
 import 'package:flutter_document_scanner/src/utils/image_utils.dart';
 
@@ -462,14 +463,19 @@ class __CropView extends State<_CropView> {
                 ),
 
                 // 左边的线中段
-                BlocSelector<CropBloc, CropState, Point>(
+                BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) {
-                    return Point((state.area.topLeft.x + state.area.bottomLeft.x)/ 2.0, (state.area.topLeft.y + state.area.bottomLeft.y) / 2.0);
+                    return state.area;
                   },
-                  builder: (context, state) {
+                  builder: (context, area) {
+
+                    final pointA = area.topLeft;
+                    final pointB = area.bottomLeft;
+                    final angle = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+
                     return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      left: (pointA.x + pointB.x)/ 2.0 - (cropPhotoDocumentStyle.dotSize / 2),
+                      top: (pointA.y + pointB.y) / 2.0 - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
@@ -492,7 +498,7 @@ class __CropView extends State<_CropView> {
                           width: cropPhotoDocumentStyle.dotSize,
                           height: cropPhotoDocumentStyle.dotSize * borderHeightCount,
                           child: Transform.rotate(
-                            angle: pi/3,
+                            angle: angle - pi / 2,
                             child: Center(
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(
@@ -510,18 +516,24 @@ class __CropView extends State<_CropView> {
                         ),
                       ),
                     );
+
                   },
                 ),
 
                 // 上边的线中段
-                BlocSelector<CropBloc, CropState, Point>(
+                BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) {
-                    return Point((state.area.topLeft.x + state.area.topRight.x)/ 2.0, (state.area.topLeft.y + state.area.topRight.y) / 2.0);
+                    return state.area;
                   },
-                  builder: (context, state) {
+                  builder: (context, area) {
+
+                    final pointA = area.topLeft;
+                    final pointB = area.topRight;
+                    final angle = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+
                     return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
+                      left: (pointA.x + pointB.x)/ 2.0 - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      top: (pointA.y + pointB.y) / 2.0 - (cropPhotoDocumentStyle.dotSize / 2),
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
@@ -543,16 +555,19 @@ class __CropView extends State<_CropView> {
                           color: Colors.transparent,
                           width: cropPhotoDocumentStyle.dotSize * borderHeightCount,
                           height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                          child: Transform.rotate(
+                            angle: angle,
+                            child: Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  cropPhotoDocumentStyle.dotRadius,
+                                ),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -563,15 +578,19 @@ class __CropView extends State<_CropView> {
                 ),
 
                 // 右边的线中段
-                BlocSelector<CropBloc, CropState, Point>(
+                BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) {
-                    return Point((state.area.topRight.x + state.area.bottomRight.x)/ 2.0, 
-                                (state.area.topRight.y + state.area.bottomRight.y) / 2.0,);
+                    return state.area;
                   },
-                  builder: (context, state) {
+                  builder: (context, area) {
+
+                    final pointA = area.topRight;
+                    final pointB = area.bottomRight;
+                    final angle = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+
                     return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      left: (pointA.x + pointB.x)/ 2.0 - (cropPhotoDocumentStyle.dotSize / 2),
+                      top: (pointA.y + pointB.y) / 2.0 - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
@@ -593,16 +612,19 @@ class __CropView extends State<_CropView> {
                           color: Colors.transparent,
                           width: cropPhotoDocumentStyle.dotSize,
                           height: cropPhotoDocumentStyle.dotSize * borderHeightCount,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
-                                color: Colors.white,
+                          child: Transform.rotate(
+                            angle: angle - pi / 2,
+                            child: Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  cropPhotoDocumentStyle.dotRadius,
+                                ),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -613,15 +635,19 @@ class __CropView extends State<_CropView> {
                 ),
 
                 // 下边的线中段
-                BlocSelector<CropBloc, CropState, Point>(
+                BlocSelector<CropBloc, CropState, Area>(
                   selector: (state) {
-                    return Point((state.area.bottomLeft.x + state.area.bottomRight.x)/ 2.0, 
-                                  (state.area.bottomLeft.y + state.area.bottomRight.y) / 2.0,);
+                    return state.area;
                   },
-                  builder: (context, state) {
+                  builder: (context, area) {
+
+                    final pointA = area.bottomLeft;
+                    final pointB = area.bottomRight;
+                    final angle = atan2(pointB.y - pointA.y, pointB.x - pointA.x);
+
                     return Positioned(
-                      left: state.x - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
-                      top: state.y - (cropPhotoDocumentStyle.dotSize / 2),
+                      left: (pointA.x + pointB.x)/ 2.0 - (cropPhotoDocumentStyle.dotSize * borderHeightCount / 2),
+                      top: (pointA.y + pointB.y) / 2.0 - (cropPhotoDocumentStyle.dotSize / 2),
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           context.read<CropBloc>().add(
@@ -643,16 +669,19 @@ class __CropView extends State<_CropView> {
                           color: Colors.transparent,
                           width: cropPhotoDocumentStyle.dotSize * borderHeightCount,
                           height: cropPhotoDocumentStyle.dotSize,
-                          child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                cropPhotoDocumentStyle.dotRadius,
-                              ),
-                              child: Container(
-                                width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
-                                height:
-                                    cropPhotoDocumentStyle.dotSize - (2 * 2),
-                                color: Colors.white,
+                          child: Transform.rotate(
+                            angle: angle,
+                            child: Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  cropPhotoDocumentStyle.dotRadius,
+                                ),
+                                child: Container(
+                                  width: cropPhotoDocumentStyle.dotSize * borderHeightCount - (2 * 2),
+                                  height:
+                                      cropPhotoDocumentStyle.dotSize - (2 * 2),
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),

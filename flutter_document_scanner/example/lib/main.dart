@@ -6,7 +6,6 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_document_scanner_example/pages/basic_page.dart';
 import 'package:flutter_document_scanner_example/pages/custom_page.dart';
 import 'package:flutter_document_scanner_example/pages/from_gallery_page.dart';
 

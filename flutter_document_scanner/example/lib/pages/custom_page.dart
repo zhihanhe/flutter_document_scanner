@@ -35,8 +35,16 @@ class _CustomPageState extends State<CustomPage> {
         takePhotoDocumentStyle: TakePhotoDocumentStyle(
           top: MediaQuery.of(context).padding.top + 25,
           hideDefaultButtonTakePicture: true,
-          onLoading: const CircularProgressIndicator(
-            color: Colors.white,
+          onLoading: const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Center(
+                child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
           ),
           children: [
             // * AppBar

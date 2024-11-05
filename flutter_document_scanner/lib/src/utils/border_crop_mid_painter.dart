@@ -37,7 +37,7 @@ class BorderCropMidPainter extends CustomPainter {
 
     const double borderRadiusRadius = 20;
     final Rect rect = Rect.fromCenter(center: Offset((area.topLeft.x + area.bottomLeft.x)/2, (area.topLeft.y + area.bottomLeft.y)/2), width: 20, height: 40);
-    final RRect rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadiusRadius));
+    final RRect rrect = RRect.fromRectAndRadius(rect, const Radius.circular(borderRadiusRadius));
 
     canvas.drawRRect(rrect, paint);
   }

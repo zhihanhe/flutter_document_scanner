@@ -19,7 +19,7 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^8.0.3
-  camera: ^0.10.5+5
+  camera: ^0.11.0+2
   equatable: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_document_scanner_android: ^1.1.1

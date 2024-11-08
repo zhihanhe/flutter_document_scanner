@@ -64,6 +64,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
 
     if (_cameraController != null) {
+      // await _cameraController?.stopImageStream();
       await _cameraController?.dispose();
       _cameraController = null;
     }
@@ -285,6 +286,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   @override
   Future<void> close() async {
+    // await _cameraController?.stopImageStream();
     await _cameraController?.dispose();
     return super.close();
   }

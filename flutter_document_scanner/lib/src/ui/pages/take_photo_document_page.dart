@@ -95,6 +95,11 @@ class _CameraPreview extends StatelessWidget {
           );
         }
 
+        // TODO 暂时无法处理每一帧，注释
+        // state.startImageStream((CameraImage image) {
+        //   print('开始处理每一帧的数据：$image');
+        // });
+
         return Stack(
           fit: StackFit.expand,
           children: [
